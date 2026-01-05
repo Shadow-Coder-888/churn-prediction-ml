@@ -10,26 +10,33 @@ def preprocess(df):
     # Drop identifier
     df = df.drop(columns=['customerID'])
 
-    # Convert target
+    # Target encoding
     df['Churn'] = df['Churn'].map({'Yes': 1, 'No': 0})
 
     # Fix TotalCharges
     df['TotalCharges'] = pd.to_numeric(df['TotalCharges'], errors='coerce')
     df['TotalCharges'] = df['TotalCharges'].fillna(0)
 
-    # Binary categorical encoding
-    binary_cols = [
-        'gender', 'Partner', 'Dependents', 'PhoneService',
+    # Binary Yes/No columns ONLY
+    yes_no_cols = [
+        'Partner', 'Dependents', 'PhoneService',
         'PaperlessBilling'
     ]
 
-    for col in binary_cols:
+    for col in yes_no_cols:
         df[col] = df[col].map({'Yes': 1, 'No': 0})
 
-    # One-hot encode remaining categorical columns
+    # Gender encoding
+    df['gender'] = df['gender'].map({'Male': 1, 'Female': 0})
+
+    # One-hot encode remaining categoricals
     df = pd.get_dummies(df, drop_first=True)
 
+    # Final NaN safeguard
+    df = df.fillna(0)
+
     return df
+
 
 
 def split_and_save(df, output_path):
