@@ -1,0 +1,8 @@
+__pycache__/
+.git/
+.gitignore
+notebooks/
+data/raw/
+data/processed/
+*.ipynb
+.env
